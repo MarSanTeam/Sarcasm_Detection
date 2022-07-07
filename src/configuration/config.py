@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
-# pylint: disable-msg=too-few-public-methods
 # ========================================================
 """config module is written for write parameters."""
 # ========================================================
 
 
-# ========================================================
-# Imports
-# ========================================================
-
+# ============================ Third Party libs ============================
 import argparse
 from pathlib import Path
 
@@ -18,55 +14,44 @@ class BaseConfig:
     BaseConfig class is written to write configs in it
     """
 
-
     def __init__(self):
         self.parser = argparse.ArgumentParser()
         self.parser.add_argument("--model_name", type=str, default="SarcasmDetection")
 
         self.parser.add_argument("--processed_data_dir", type=str,
-                                 default=Path(__file__).parents[2].__str__() + "/data/SemEval/Task_A_EN/")
-                                                                               #"ARSarcasm_ACL/")
-                                                                               # "SarcasmTweetKaggle/")
-
-
-
+                                 default=Path(__file__).parents[
+                                             2].__str__() + "/data/SemEval/Task_A_EN/")
         self.parser.add_argument("--assets_dir", type=str,
                                  default=Path(__file__).parents[2].__str__() + "/assets/")
 
         self.parser.add_argument("--saved_model_path", type=str,
-                                 default=Path(__file__).parents[2].__str__() + "/assets/SarcasmDetection/")
-        # /home/maryam.najafi/LanguageModels/t5_en_large
+                                 default=Path(__file__).parents[
+                                             2].__str__() + "/assets/SarcasmDetection/")
         self.parser.add_argument("--lm_model_path", type=str,
-                                 default="/home/maryam.najafi/LanguageModels/t5_en_large/",
+                                 default=Path(__file__).parents[
+                                             2].__str__() + "LanguageModels/t5_en_large/",
                                  help="Path of the multilingual lm model dir")
         self.parser.add_argument("--lm_tokenizer_path", type=str,
                                  default=
-                                 "/home/maryam.najafi/LanguageModels/t5_en_large/",
+                                 Path(__file__).parents[
+                                     2].__str__() + "LanguageModels/t5_en_large/",
                                  help="Path of the multilingual lm tokenizer dir")
         # /home/maryam.najafi/LanguageModels/t5_en_large
         self.parser.add_argument("--mlm_model_path", type=str,
-                                 default="/home/maryam.najafi/LanguageModels/mt5_en_large/",
+                                 default=Path(__file__).parents[
+                                             2].__str__() + "LanguageModels/mt5_en_large/",
                                  help="Path of the multilingual lm model dir")
         self.parser.add_argument("--mlm_tokenizer_path", type=str,
                                  default=
-                                 "/home/maryam.najafi/LanguageModels/mt5_en_large/",
+                                 Path(__file__).parents[
+                                     2].__str__() + "LanguageModels/mt5_en_large/",
                                  help="Path of the multilingual lm tokenizer dir")
         self.parser.add_argument("--roberta_model_path", type=str,
                                  default=Path(__file__).parents[2].__str__()
                                          + "/assets/pretrained_models/xlm_roberta_large")
 
-        self.parser.add_argument("--bpemb_model_path", type=str,
-                                 default=Path(__file__).parents[2].__str__()
-                                         + "/assets/pretrained_models/bpemb/farsi/fa.wiki.bpe.vs200000.model")
-        self.parser.add_argument("--bpemb_vocab_path", type=str,
-                                 default=Path(__file__).parents[2].__str__()
-                                         + "/assets/pretrained_models/bpemb/farsi/fa.wiki.bpe.vs200000.d300.w2v.bin")
-
         self.parser.add_argument("--csv_logger_path", type=str,
                                  default=Path(__file__).parents[2].__str__() + "/assets")
-        # self.parser.add_argument("--train_file", type=str, default="pretrain_train.csv")
-        # self.parser.add_argument("--test_file", type=str, default="pretrain_test.csv")
-        # self.parser.add_argument("--val_file", type=str, default="pretrain_test.csv")
 
         self.parser.add_argument("--train_file", type=str, default="train_data.csv")
         self.parser.add_argument("--test_file", type=str, default="test_data.csv")
