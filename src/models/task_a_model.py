@@ -1,15 +1,25 @@
+# -*- coding: utf-8 -*-
+"""
+This module is written to write Classifier for task A
+"""
+
+# ============================ Third Party libs ============================
 import pytorch_lightning as pl
 import torch
 import torch.nn.functional as function
 import torchmetrics
 from transformers import T5EncoderModel
 
-from configuration.config import BaseConfig
-from models.attention import ScaledDotProductAttention
-from models.manual_transformers import EncoderLayer
+# ============================ My packages ============================
+from .attention import ScaledDotProductAttention
+from .manual_transformers import EncoderLayer
 
 
 class Classifier(pl.LightningModule):
+    """
+    The classifier for Task A
+    """
+
     def __init__(self, n_classes: int, class_weights, arg):
         super().__init__()
         self.accuracy = torchmetrics.Accuracy()
@@ -22,13 +32,13 @@ class Classifier(pl.LightningModule):
         self.out_features = 512
         self.criterion = torch.nn.CrossEntropyLoss()  # CrossEntropyLoss()
         self.model = T5EncoderModel.from_pretrained(arg.lm_model_path)
-        # self.model = T5EncoderModel.from_pretrained("../assets/SarcasmDetection/version_45_finetunedonkaggle/")
         self.lstm = torch.nn.LSTM(input_size=self.model.config.hidden_size,
                                   hidden_size=self.hidden_size,
                                   num_layers=self.num_layers,
                                   bidirectional=True,
                                   batch_first=True)
-        self.attention = ScaledDotProductAttention(dim=self.model.config.hidden_size + (2 * self.hidden_size))
+        self.attention = ScaledDotProductAttention(
+            dim=self.model.config.hidden_size + (2 * self.hidden_size))
         self.enc_layer = EncoderLayer(hid_dim=self.model.config.hidden_size,
                                       n_heads=16, pf_dim=self.model.config.hidden_size * 2,
                                       dropout=arg.dropout)
@@ -79,8 +89,10 @@ class Classifier(pl.LightningModule):
 
         metric2value = {"train_loss": loss,
                         "train_acc": self.accuracy(torch.softmax(outputs, dim=1), label),
-                        "train_f1_first_class": self.F_score(torch.softmax(outputs, dim=1), label)[0],
-                        "train_f1_second_class": self.F_score(torch.softmax(outputs, dim=1), label)[1],
+                        "train_f1_first_class": self.F_score(torch.softmax(outputs, dim=1), label)[
+                            0],
+                        "train_f1_second_class": self.F_score(torch.softmax(outputs, dim=1), label)[
+                            1],
                         "train_total_F1": self.F_score_total(torch.softmax(outputs, dim=1), label)}
 
         self.log_dict(metric2value, on_step=False, on_epoch=True, prog_bar=True, logger=True)
@@ -94,7 +106,8 @@ class Classifier(pl.LightningModule):
         metric2value = {"val_loss": loss,
                         "val_acc": self.accuracy(torch.softmax(outputs, dim=1), label),
                         "val_f1_first_class": self.F_score(torch.softmax(outputs, dim=1), label)[0],
-                        "val_f1_second_class": self.F_score(torch.softmax(outputs, dim=1), label)[1],
+                        "val_f1_second_class": self.F_score(torch.softmax(outputs, dim=1), label)[
+                            1],
                         "val_total_F1": self.F_score_total(torch.softmax(outputs, dim=1), label)}
 
         self.log_dict(metric2value, on_step=False, on_epoch=True, prog_bar=True, logger=True)
@@ -107,8 +120,10 @@ class Classifier(pl.LightningModule):
 
         metric2value = {"test_loss": loss,
                         "test_acc": self.accuracy(torch.softmax(outputs, dim=1), label),
-                        "test_f1_first_class": self.F_score(torch.softmax(outputs, dim=1), label)[0],
-                        "test_f1_second_class": self.F_score(torch.softmax(outputs, dim=1), label)[1],
+                        "test_f1_first_class": self.F_score(torch.softmax(outputs, dim=1), label)[
+                            0],
+                        "test_f1_second_class": self.F_score(torch.softmax(outputs, dim=1), label)[
+                            1],
                         "test_total_F1": self.F_score_total(torch.softmax(outputs, dim=1), label)}
 
         self.log_dict(metric2value, on_step=False, on_epoch=True, prog_bar=True, logger=True)
@@ -117,25 +132,3 @@ class Classifier(pl.LightningModule):
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(self.parameters(), lr=self.lr)
         return [optimizer]
-    # def configure_optimizers(self):
-    #     optimizer = torch.optim.AdamW(self.parameters(), lr=self.lr)
-    #     scheduler = get_cosine_schedule_with_warmup(
-    #         optimizer,
-    #         num_warmup_steps=self.n_warmup_steps,
-    #         num_training_steps=self.n_training_steps
-    #     )
-    #     return dict(optimizer=optimizer,
-    #                 lr_scheduler=dict(scheduler=scheduler, interval="step")
-    #                 )
-
-
-if __name__ == '__main__':
-    CONFIG_CLASS = BaseConfig()
-    CONFIG = CONFIG_CLASS.get_config()
-
-    MODEL = Classifier(class_weights=0.2, n_classes=2, arg=CONFIG)
-    x = torch.rand((64, 150))
-    y = torch.rand((64, 150))
-    z = torch.rand((64, 150))
-
-    MODEL.forward(x.long())
