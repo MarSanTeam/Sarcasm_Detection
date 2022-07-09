@@ -15,6 +15,10 @@ from models.manual_transformers import EncoderLayer
 
 
 class Classifier(pl.LightningModule):
+    """
+        The classifier for Task B
+
+    """
     def __init__(self, class_weights: dict, all_class2weights: dict, n_warmup_steps,
                  n_training_steps, arg):
         super().__init__()
@@ -314,7 +318,4 @@ class Classifier(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(self.parameters(), lr=self.lr)
-        return dict(optimizer=optimizer,
-                    lr_scheduler=dict(scheduler=scheduler, interval="step")
-                    )
-        # return [optimizer]
+        return [optimizer]
