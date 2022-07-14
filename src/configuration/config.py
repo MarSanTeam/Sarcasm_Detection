@@ -28,27 +28,9 @@ class BaseConfig:
                                  default=Path(__file__).parents[
                                              2].__str__() + "/assets/SarcasmDetection/")
         self.parser.add_argument("--lm_model_path", type=str,
-                                 default=Path(__file__).parents[
-                                             2].__str__() + "LanguageModels/t5_en_large/",
+                                 default=Path(__file__).parents[3].__str__() +
+                                         "/pretrained_models/t5_en_large/",
                                  help="Path of the multilingual lm model dir")
-        self.parser.add_argument("--lm_tokenizer_path", type=str,
-                                 default=
-                                 Path(__file__).parents[
-                                     2].__str__() + "LanguageModels/t5_en_large/",
-                                 help="Path of the multilingual lm tokenizer dir")
-        # /home/maryam.najafi/LanguageModels/t5_en_large
-        self.parser.add_argument("--mlm_model_path", type=str,
-                                 default=Path(__file__).parents[
-                                             2].__str__() + "LanguageModels/mt5_en_large/",
-                                 help="Path of the multilingual lm model dir")
-        self.parser.add_argument("--mlm_tokenizer_path", type=str,
-                                 default=
-                                 Path(__file__).parents[
-                                     2].__str__() + "LanguageModels/mt5_en_large/",
-                                 help="Path of the multilingual lm tokenizer dir")
-        self.parser.add_argument("--roberta_model_path", type=str,
-                                 default=Path(__file__).parents[2].__str__()
-                                         + "/assets/pretrained_models/xlm_roberta_large")
 
         self.parser.add_argument("--csv_logger_path", type=str,
                                  default=Path(__file__).parents[2].__str__() + "/assets")
@@ -75,7 +57,7 @@ class BaseConfig:
                                  help="...")
 
         self.parser.add_argument("--batch_size", type=int,
-                                 default=32,
+                                 default=2,
                                  help="...")
 
         self.parser.add_argument("--lr", default=2e-5,
