@@ -58,19 +58,7 @@ if __name__ == "__main__":
     logging.debug("Label columns: %s", LABEL_COLUMNS)
 
     # Calculate class_weights
-    class2weights = {}
-    allclass2weights = {}
-    for cls in LABEL_COLUMNS:
-        num_pos = 0
-        class_weights = class_weight.compute_class_weight(
-            "balanced",
-            classes=np.unique(RAW_TRAIN_DATA[cls]),
-            y=np.array(RAW_TRAIN_DATA[cls]))
-        class2weights[cls] = torch.Tensor(class_weights)
-        for lbl in RAW_TRAIN_DATA[cls]:
-            if lbl == 1:
-                num_pos+=1
-        allclass2weights[cls] = num_pos/len(RAW_TRAIN_DATA)
+    class2weights, all_class2weights = calculate_class_weights(RAW_TRAIN_DATA, LABEL_COLUMNS)
     logging.debug("class_weights is: {}".format(class2weights))
     logging.debug("all_class2weights is: {}".format(all_class2weights))
 
