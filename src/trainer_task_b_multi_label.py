@@ -6,9 +6,7 @@ trainer module is written for train model in task B
 # ============================ Third Party libs ============================
 import logging
 import os
-import numpy as np
 import pytorch_lightning as pl
-import torch
 from pytorch_lightning.callbacks import EarlyStopping
 from pytorch_lightning.loggers import CSVLogger
 import transformers
@@ -35,17 +33,17 @@ if __name__ == "__main__":
     RAW_TRAIN_DATA = read_csv(path=os.path.join(CONFIG.processed_data_dir, CONFIG.train_file),
                               columns=CONFIG.multi_data_headers,
                               names=CONFIG.multi_customized_headers).dropna()
-    RAW_TRAIN_DATA.tweets = RAW_TRAIN_DATA.tweets.apply(lambda x: normalize_text(x))
+    RAW_TRAIN_DATA.tweets = RAW_TRAIN_DATA.tweets.apply(normalize_text)
 
     RAW_VAL_DATA = read_csv(path=os.path.join(CONFIG.processed_data_dir, CONFIG.val_file),
                             columns=CONFIG.multi_data_headers,
                             names=CONFIG.multi_customized_headers).dropna()
-    RAW_VAL_DATA.tweets = RAW_VAL_DATA.tweets.apply(lambda x: normalize_text(x))
+    RAW_VAL_DATA.tweets = RAW_VAL_DATA.tweets.apply(normalize_text)
 
     RAW_TEST_DATA = read_csv(path=os.path.join(CONFIG.processed_data_dir, CONFIG.test_file),
                              columns=CONFIG.multi_data_headers,
                              names=CONFIG.multi_customized_headers).dropna()
-    RAW_TEST_DATA.tweets = RAW_TEST_DATA.tweets.apply(lambda x: normalize_text(x))
+    RAW_TEST_DATA.tweets = RAW_TEST_DATA.tweets.apply(normalize_text)
 
     logging.debug(RAW_TRAIN_DATA.head(), RAW_VAL_DATA.head(), RAW_TEST_DATA.head())
     logging.debug("length of Train data is: %s", len(RAW_TRAIN_DATA))
@@ -59,8 +57,8 @@ if __name__ == "__main__":
 
     # Calculate class_weights
     class2weights, all_class2weights = calculate_class_weights(RAW_TRAIN_DATA, LABEL_COLUMNS)
-    logging.debug("class_weights is: {}".format(class2weights))
-    logging.debug("all_class2weights is: {}".format(all_class2weights))
+    logging.debug("class_weights is: %s", class2weights)
+    logging.debug("all_class2weights is: %s", all_class2weights)
 
     DATA_MODULE = MultiDataModule(data={"train_data": RAW_TRAIN_DATA,
                                         "val_data": RAW_VAL_DATA,
