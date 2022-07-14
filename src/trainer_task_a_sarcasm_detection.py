@@ -10,7 +10,6 @@ import numpy as np
 import pytorch_lightning as pl
 from sklearn.utils import class_weight
 import torch
-from hazm import Normalizer
 from pytorch_lightning.callbacks import EarlyStopping
 from pytorch_lightning.loggers import CSVLogger
 from tabulate import tabulate
@@ -31,24 +30,23 @@ if __name__ == "__main__":
     CONFIG = CONFIG_CLASS.get_config()
     TOKENIZER = T5Tokenizer.from_pretrained(CONFIG.lm_model_path)
     LOGGER = CSVLogger(CONFIG.csv_logger_path, name="SarcasmDetection")
-    NORMALIZER = Normalizer()
     # load raw data
     RAW_TRAIN_DATA = read_csv(path=os.path.join(CONFIG.processed_data_dir, CONFIG.train_file),
                               columns=CONFIG.data_headers,
                               names=CONFIG.customized_headers).dropna()
-    RAW_TRAIN_DATA.texts = RAW_TRAIN_DATA.texts.apply(lambda x: normalize_text(x, NORMALIZER))
+    RAW_TRAIN_DATA.texts = RAW_TRAIN_DATA.texts.apply(lambda x: normalize_text(x))
     logging.info(tabulate(RAW_TRAIN_DATA[:10], headers="keys", tablefmt="psql"))
 
     RAW_VAL_DATA = read_csv(path=os.path.join(CONFIG.processed_data_dir, CONFIG.val_file),
                             columns=CONFIG.data_headers,
                             names=CONFIG.customized_headers).dropna()
-    RAW_VAL_DATA.texts = RAW_VAL_DATA.texts.apply(lambda x: normalize_text(x, NORMALIZER))
+    RAW_VAL_DATA.texts = RAW_VAL_DATA.texts.apply(lambda x: normalize_text(x))
     logging.info(tabulate(RAW_VAL_DATA[:10], headers="keys", tablefmt="psql"))
 
     RAW_TEST_DATA = read_csv(path=os.path.join(CONFIG.processed_data_dir, CONFIG.test_file),
                              columns=CONFIG.data_headers,
                              names=CONFIG.customized_headers).dropna()
-    RAW_TEST_DATA.texts = RAW_TEST_DATA.texts.apply(lambda x: normalize_text(x, NORMALIZER))
+    RAW_TEST_DATA.texts = RAW_TEST_DATA.texts.apply(lambda x: normalize_text(x))
     logging.info(tabulate(RAW_TEST_DATA[:10], headers="keys", tablefmt="psql"))
 
     logging.debug(RAW_TRAIN_DATA.head(), RAW_VAL_DATA.head(), RAW_TEST_DATA.head())
