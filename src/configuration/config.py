@@ -20,7 +20,7 @@ class BaseConfig:
 
         self.parser.add_argument("--processed_data_dir", type=str,
                                  default=Path(__file__).parents[
-                                             2].__str__() + "/data/SemEval/Task_A_EN/")
+                                             2].__str__() + "/data/SemEval/Task_B_EN/")
         self.parser.add_argument("--assets_dir", type=str,
                                  default=Path(__file__).parents[2].__str__() + "/assets/")
 
@@ -37,11 +37,16 @@ class BaseConfig:
 
         self.parser.add_argument("--train_file", type=str, default="train_data.csv")
         self.parser.add_argument("--test_file", type=str, default="test_data.csv")
-        self.parser.add_argument("--val_file", type=str, default="dev_data.csv")
+        self.parser.add_argument("--val_file", type=str, default="test_data.csv")
 
         self.parser.add_argument("--data_headers", type=list, default=["tweet", "sarcastic"])
         self.parser.add_argument("--customized_headers", type=list, default=["texts", "labels"])
-
+        self.parser.add_argument("--multi_data_headers", type=list,
+                                 default=["tweets", "sarcasm", "irony", "satire", "understatement",
+                                          "overstatement", "rhetorical_question"])
+        self.parser.add_argument("--multi_customized_headers", type=list,
+                                 default=["tweets", "sarcasm", "irony", "satire", "understatement",
+                                          "overstatement", "rhetorical_question"])
         self.parser.add_argument("--save_top_k", type=int, default=1, help="...")
 
         self.parser.add_argument("--num_workers", type=int,
