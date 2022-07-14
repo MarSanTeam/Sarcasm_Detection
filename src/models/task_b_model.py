@@ -15,18 +15,11 @@ from models.manual_transformers import EncoderLayer
 
 
 class Classifier(pl.LightningModule):
-    """
-        The classifier for Task B
-
-    """
-    def __init__(self, class_weights: dict, all_class2weights: dict, n_warmup_steps,
-                 n_training_steps, arg):
+    def __init__(self, class_weights: dict, all_class2weights: dict, arg):
         super().__init__()
 
         self.accuracy = torchmetrics.Accuracy()
         self.all_class2weights = all_class2weights
-        self.n_warmup_steps = n_warmup_steps
-        self.n_training_steps = n_training_steps
         self.F_score = torchmetrics.F1(average="none", num_classes=2)
         self.F_score_total = torchmetrics.F1(average="weighted", num_classes=2)
         self.max_len = arg.max_length
@@ -82,6 +75,7 @@ class Classifier(pl.LightningModule):
         # enc_out.size() = [batch_size, sequence_length, hidden_size]
 
         output, (_, _) = self.lstm(enc_out)
+
         # output.size() = [sent_len, batch_size, hid_dim * num_directions]
         # hidden.size() = [num_layers * num_directions, batch_size, hid_dim]
         # cell.size() = [num_layers * num_directions, batch_size, hid_dim]
